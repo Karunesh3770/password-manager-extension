@@ -1,0 +1,30 @@
+function c(){return Array.from(document.querySelectorAll('input[type="password"]')).filter(n=>n.offsetParent!==null)}function h(n){return n.closest("form")??n.closest("div[class]")??document.body}function E(n){const e=['input[autocomplete="username"]','input[autocomplete="email"]','input[type="email"]','input[name*="user" i]','input[name*="email" i]','input[name*="login" i]','input[name*="account" i]','input[id*="user" i]','input[id*="email" i]','input[id*="login" i]','input[type="text"]'];for(const r of e){const o=n.querySelector(r);if(o&&o.type!=="password"&&o.type!=="hidden"&&o.offsetParent!==null)return o}return null}function x(n,e){var t;const r=Object.getPrototypeOf(n),o=(t=Object.getOwnPropertyDescriptor(r,"value"))==null?void 0:t.set;o?o.call(n,e):n.value=e,n.dispatchEvent(new Event("input",{bubbles:!0})),n.dispatchEvent(new Event("change",{bubbles:!0}))}let y="";function f(){const n=c();if(n.length===0)return;let e=n.find(d=>d.autocomplete==="new-password"&&d.value);if(e||(e=[...n].reverse().find(d=>d.value)),!e||!e.value)return;const r=h(e),o=E(r),t=window.location.origin,s=(o==null?void 0:o.value)??"",i=e.value,l=`${t}|${s}|${i}`;l!==y&&(y=l,chrome.runtime.sendMessage({type:"CREDENTIAL_CAPTURED",payload:{url:t,username:s,password:i}}))}function k(){document.addEventListener("submit",()=>f(),{capture:!0}),document.addEventListener("click",n=>{!n.target.closest('button[type="submit"], button:not([type]), input[type="submit"], [role="button"]')||c().filter(t=>t.value).length===0||setTimeout(()=>f(),100)},{capture:!0}),document.addEventListener("keydown",n=>{if(n.key!=="Enter")return;const e=n.target;e instanceof HTMLInputElement&&e.type==="password"&&e.value&&setTimeout(()=>f(),100)},{capture:!0})}let a=null;function m(){a&&(a.remove(),a=null)}function w(n){const e=document.createElement("div");return e.textContent=n,e.innerHTML}function C(n){const e=c(),r=e[0]?h(e[0]):document.body,o=E(r);o&&x(o,n.username),e[0]&&x(e[0],n.password),m()}function T(n,e){const r=document.getElementById("pm-password-prompt");r&&r.remove();const o=document.createElement("div");o.id="pm-password-prompt",o.style.cssText=`
+    padding: 8px 0 4px; display: flex; flex-direction: column; gap: 6px;
+  `;const t=document.createElement("input");t.type="password",t.placeholder="Master password",t.style.cssText=`
+    width: 100%; padding: 6px 8px; border: 1px solid #dee2e6; border-radius: 4px;
+    font-size: 13px; outline: none; box-sizing: border-box;
+  `,t.onfocus=()=>{t.style.borderColor="#4263eb"},t.onblur=()=>{t.style.borderColor="#dee2e6"};const s=document.createElement("div");s.style.cssText="font-size:11px; color:#e03131; display:none;";const i=document.createElement("div");i.style.cssText="display:flex; gap:6px;";const l=document.createElement("button");l.textContent="Unlock & Fill",l.style.cssText=`
+    flex:1; padding:6px; border:none; border-radius:4px;
+    background:#4263eb; color:#fff; font-size:12px; font-weight:500; cursor:pointer;
+  `;const d=document.createElement("button");d.textContent="Cancel",d.style.cssText=`
+    padding:6px 10px; border:1px solid #dee2e6; border-radius:4px;
+    background:#f8f9fa; color:#212529; font-size:12px; cursor:pointer;
+  `,d.onclick=()=>o.remove();async function b(){const u=t.value;u&&(l.textContent="Verifying...",l.setAttribute("disabled","true"),chrome.runtime.sendMessage({type:"VERIFY_FOR_FILL",payload:{masterPassword:u}},p=>{p!=null&&p.ok?C(n):(s.textContent="Wrong password",s.style.display="block",l.textContent="Unlock & Fill",l.removeAttribute("disabled"),t.value="",t.focus())}))}l.onclick=b,t.onkeydown=u=>{u.key==="Enter"&&b()},i.appendChild(l),i.appendChild(d),o.appendChild(t),o.appendChild(s),o.appendChild(i),e.insertAdjacentElement("afterend",o),t.focus()}function F(n,e){m();const r=document.createElement("div");r.id="pm-autofill-banner",r.style.cssText=`
+    position: fixed; bottom: 16px; right: 16px; z-index: 2147483647;
+    background: #fff; border: 1px solid #dee2e6; border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 12px 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px; color: #212529; max-width: 320px; min-width: 240px;
+  `;const o=document.createElement("div");o.style.cssText="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;",o.innerHTML='<strong style="font-size:14px;">Autofill credentials</strong>';const t=document.createElement("button");t.textContent="×",t.style.cssText="background:none; border:none; font-size:18px; cursor:pointer; color:#6c757d; padding:0 4px;",t.onclick=m,o.appendChild(t),r.appendChild(o);for(const s of n){const i=document.createElement("button");i.style.cssText=`
+      display: block; width: 100%; text-align: left; padding: 8px 10px;
+      margin-bottom: 4px; border: 1px solid #dee2e6; border-radius: 6px;
+      background: #f8f9fa; cursor: pointer; font-size: 13px; color: #212529;
+      transition: background 0.15s;
+    `,i.onmouseenter=()=>{i.style.background="#e9ecef"},i.onmouseleave=()=>{i.style.background="#f8f9fa"},i.innerHTML=`
+      <div style="font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+        ${w(s.username||"(no username)")}
+      </div>
+      <div style="font-size:11px; color:#6c757d; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+        ${w(s.url)}
+      </div>
+    `,i.onclick=()=>{e==="none"||e==="login_only"?C(s):T(s,i)},r.appendChild(i)}document.body.appendChild(r),a=r}function g(){c().length!==0&&chrome.runtime.sendMessage({type:"GET_SETTINGS"},e=>{var o;if(chrome.runtime.lastError)return;const r=e!=null&&e.ok?((o=e.data)==null?void 0:o.authMode)??"every_fill":"every_fill";chrome.runtime.sendMessage({type:"GET_MATCHES",payload:{url:window.location.origin}},t=>{chrome.runtime.lastError||t!=null&&t.ok&&Array.isArray(t.data)&&t.data.length>0&&F(t.data,r)})})}function v(){k(),g(),new MutationObserver(()=>{c().length>0&&!a&&g()}).observe(document.body,{childList:!0,subtree:!0})}document.readyState==="loading"?document.addEventListener("DOMContentLoaded",v):v();

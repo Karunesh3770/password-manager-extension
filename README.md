@@ -61,10 +61,7 @@ npm run test:watch  # watch mode
 - In-memory mock data (not persisted).
 - Background service worker and content script placeholders.
 - Cryptography module stubs (not yet implemented).
-
-## What's Not Included
-
 - Real credential storage or encryption.
 - Autofill functionality.
 - Master password / authentication.
-- This is **not production-ready or secure**.
+

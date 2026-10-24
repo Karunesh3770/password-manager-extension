@@ -58,7 +58,6 @@ npm run test:watch  # watch mode
 
 - Vault screen with search, add, edit, and delete.
 - Credential form with URL, username, and password fields.
-- In-memory mock data (not persisted).
 - Background service worker and content script placeholders.
 - Cryptography module stubs (not yet implemented).
 - Real credential storage or encryption.

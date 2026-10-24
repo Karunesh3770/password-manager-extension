@@ -59,7 +59,7 @@ npm run test:watch  # watch mode
 - Vault screen with search, add, edit, and delete.
 - Credential form with URL, username, and password fields.
 - Background service worker and content script placeholders.
-- Cryptography module stubs (not yet implemented).
+- Cryptography module stubs.
 - Real credential storage or encryption.
 - Autofill functionality.
 - Master password / authentication.

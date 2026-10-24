@@ -1,6 +1,6 @@
 # Password Manager — Chrome Extension
 
-A Chrome Extension (Manifest V3) password manager built with TypeScript, React, and Vite. This is a **development prototype** using mock data — it does not store real credentials or provide security guarantees.
+A Chrome Extension (Manifest V3) password manager built with TypeScript, React, and Vite. This is a **development prototype**  it does store real credentials or provide security guarantees.
 
 ## Project Structure
 
